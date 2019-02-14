@@ -29,13 +29,28 @@ describe('id_token', () => {
     )
   })
 
-  it('invalid audience', () => {
+  it('invalid audience - string', () => {
     var id_token = sign({}, {aud: 'grant'}, 'c')
     var {error} = verify({key: 'simov'}, {id_token})
     t.equal(
       error,
       'Grant: OpenID Connect invalid id_token audience'
     )
+  })
+
+  it('invalid audience - array', () => {
+    var id_token = sign({}, {aud: ['grant']}, 'c')
+    var {error} = verify({key: 'simov'}, {id_token})
+    t.equal(
+      error,
+      'Grant: OpenID Connect invalid id_token audience'
+    )
+  })
+
+  it('valid audience - array', () => {
+    var id_token = sign({}, {aud: ['grant']}, 'c')
+    var {error} = verify({key: 'grant'}, {id_token})
+    t.equal(error, undefined)
   })
 
   it('nonce mismatch', () => {
